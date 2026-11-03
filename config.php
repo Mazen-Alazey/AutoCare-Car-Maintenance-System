@@ -15,13 +15,13 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // 2. Database Connection Constants
 // عدّل هذه البيانات حسب استضافتك (XAMPP أو InfinityFree)
-define('DB_HOST', 'sql113.infinityfree.com');
-define('DB_NAME', 'if0_42724589_autocare_db');
-define('DB_USER', 'if0_42724589');
-define('DB_PASS', 'MazenM11');
-define('DB_CHARSET', 'utf8mb4');
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'autocare_db');
+define('DB_USER', 'root');
+define('DB_PASS', '');
 
-// 3. Dynamic Base URL Detection
+
+// 3. Dynamic Base URL Detectio
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)) ? "https://" : "http://";
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 $scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
