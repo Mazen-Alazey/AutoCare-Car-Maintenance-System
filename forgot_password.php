@@ -1,0 +1,10 @@
+<?php
+require_once __DIR__.'/config.php'; ensure_extended_schema();
+if (is_logged_in()) { header('Location: dashboard.php'); exit; }
+$error=''; $success='';
+if ($_SERVER['REQUEST_METHOD']==='POST') { verify_csrf(); $input=trim($_POST['login_input']??'');
+  if($input==='') $error='أدخل اسم المستخدم أو البريد الإلكتروني.'; else { $st=db()->prepare("SELECT id,status FROM users WHERE username=:x OR email=:x LIMIT 1"); $st->execute([':x'=>$input]); $u=$st->fetch();
+    if(!$u) $error='لم يتم العثور على الحساب.'; elseif($u['status']!=='active') $error='الحساب غير نشط حالياً.'; elseif(create_password_reset_request((int)$u['id'])) $success='تم إرسال طلب استعادة كلمة المرور إلى إدارة النظام، وسيتم السماح بالاستعادة بعد موافقة الأدمن المخول.'; else $error='تعذر إرسال طلب الاستعادة. يرجى المحاولة لاحقًا.';
+  }
+}
+?><!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>استعادة كلمة المرور</title><link rel="stylesheet" href="style.css"></head><body class="auth-body"><div class="auth-container"><div class="auth-card"><div class="auth-header"><a href="index.php" class="brand-badge">AutoCare System</a><h2>نسيت كلمة المرور</h2><p>سيصل طلبك إلى الإدارة للموافقة قبل تغيير كلمة المرور.</p></div><?php if($error):?><div class="alert alert-danger"><?=clean($error)?></div><?php endif;?><?php if($success):?><div class="alert alert-success"><?=clean($success)?></div><?php endif;?><form method="post" class="form-grid"><?=csrf_field()?><div class="form-group"><label>اسم المستخدم أو البريد الإلكتروني</label><input class="form-control" name="login_input" required></div><button class="btn btn-primary btn-block">إرسال طلب الاستعادة</button></form><div class="auth-footer"><a href="reset_password.php">لدي موافقة وأريد تعيين كلمة مرور جديدة</a><br><a href="login.php">← العودة لتسجيل الدخول</a></div></div></div></body></html>
